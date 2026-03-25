@@ -26,6 +26,7 @@ Quantization
 - GGUF - binary file which will have model architecture and quantized weights
 
 
+
 Run LLMs locally with llama.cpp
 
 - c/c++ inference engine which will run quantied models on cpus/gpus
@@ -55,3 +56,11 @@ Desktop application
 extra
 - memory management
 - edge inference
+
+Task
+- research using ai tools on what small/mini problems we can solve around it,
+small tools related to uploading documents, quantization library of your own, etc
+take examples from the Build Your Own AI Everything github repo
+
+- himanshu will add the issues in the github repo
+

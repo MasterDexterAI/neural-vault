@@ -1,3 +1,10 @@
 models/
 venv/
 __pycache__/
+*.pyc
+*.pyo
+venv/
+.DS_Store
+chroma_db/
+models/*.gguf
+.env
