@@ -21,14 +21,11 @@ class LLMEngine:
             self.tokenizer = AutoTokenizer.from_pretrained(model_name)
             self.model = AutoModelForCausalLM.from_pretrained(model_name)
 
-            # Create pipeline
+            # Create pipeline (no generation params here — pass at call time)
             self.generator = pipeline(
                 "text-generation",
                 model=self.model,
                 tokenizer=self.tokenizer,
-                max_new_tokens=256,
-                temperature=0.7,
-                do_sample=True,
                 pad_token_id=self.tokenizer.eos_token_id
             )
 
@@ -49,13 +46,18 @@ class LLMEngine:
             return
 
         try:
+            # Truncate prompt to leave room for generation (GPT-2 max is 1024 tokens)
+            max_prompt_tokens = 768
+            inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=max_prompt_tokens)
+            truncated_prompt = self.tokenizer.decode(inputs["input_ids"][0], skip_special_tokens=True)
+
             # Generate response using the pipeline
-            responses = self.generator(prompt, max_new_tokens=256, num_return_sequences=1)
+            responses = self.generator(truncated_prompt, max_new_tokens=256, do_sample=True, temperature=0.7, num_return_sequences=1)
             generated_text = responses[0]['generated_text']
 
             # Remove the original prompt from the response
-            if generated_text.startswith(prompt):
-                response = generated_text[len(prompt):].strip()
+            if generated_text.startswith(truncated_prompt):
+                response = generated_text[len(truncated_prompt):].strip()
             else:
                 response = generated_text.strip()
 

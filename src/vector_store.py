@@ -24,14 +24,13 @@ class VectorStore:
         """Add text chunks to vector store"""
         if not chunks:
             return
-        
-        # Generate embeddings
+
         embeddings = self.embedding_model.encode(chunks, normalize_embeddings=True).tolist()
-        
-        # Create IDs
-        ids = [f"doc_{i}" for i in range(len(chunks))]
-        
-        # Add to Chroma
+
+        # Use content hash as ID to avoid collisions across multiple ingests
+        import hashlib
+        ids = [hashlib.md5(chunk.encode()).hexdigest() for chunk in chunks]
+
         self.collection.add(
             embeddings=embeddings,
             documents=chunks,
@@ -39,13 +38,16 @@ class VectorStore:
             metadatas=metadata or [{} for _ in chunks]
         )
 
-    def query(self, query_text: str, n_results: int = 6):
-        """Semantic search"""
+    def query(self, query_text: str, n_results: int = 6) -> tuple[list[str], list[dict]]:
+        """Semantic search. Returns (documents, metadatas)."""
         query_embedding = self.embedding_model.encode([query_text], normalize_embeddings=True).tolist()
-        
+
         results = self.collection.query(
             query_embeddings=query_embedding,
             n_results=n_results,
             include=["documents", "metadatas", "distances"]
         )
-        return results["documents"][0] if results["documents"] else []
+
+        docs = results["documents"][0] if results["documents"] else []
+        metas = results["metadatas"][0] if results["metadatas"] else []
+        return docs, metas
