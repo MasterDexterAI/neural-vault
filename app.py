@@ -1,6 +1,7 @@
 # streamlet UI
 import streamlit as st
 import os
+from src.governance import GovernanceLogger
 from src.rag_pipeline import RAGPipeline
 
 # Page config
@@ -14,6 +15,9 @@ if "pipeline" not in st.session_state:
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
+
+if "logger" not in st.session_state:
+    st.session_state.logger = GovernanceLogger()    
 
 # Sidebar - Document Upload
 with st.sidebar:
@@ -85,6 +89,7 @@ if prompt := st.chat_input("Ask anything about your documents..."):
 
         message_placeholder.markdown(full_response)
         _render_sources(sources)
+        st.session_state.logger.log_query(prompt, sources, full_response)
 
     st.session_state.messages.append({
         "role": "assistant",

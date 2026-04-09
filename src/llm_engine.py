@@ -14,12 +14,12 @@ class LLMEngine:
 
         # Try to use a small HuggingFace model if available
         try:
-            # Use a very small model that can work on CPU
-            model_name = "gpt2"  # Small, fast, works well for demo
-            print(f"🔄 Loading {model_name}...")
 
-            self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-            self.model = AutoModelForCausalLM.from_pretrained(model_name)
+            # Use a very small model that can work on CPU
+            # model_name = "gpt2"  # Small, fast, works well for demo
+            self.model_name = model_path;
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+            self.model = AutoModelForCausalLM.from_pretrained(self.model_name)
 
             # Create pipeline (no generation params here — pass at call time)
             self.generator = pipeline(

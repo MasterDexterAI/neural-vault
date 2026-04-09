@@ -1,5 +1,6 @@
 models/
 venv/
+data/
 __pycache__/
 *.pyc
 *.pyo
@@ -8,3 +9,4 @@ venv/
 chroma_db/
 models/*.gguf
 .env
+logs/
