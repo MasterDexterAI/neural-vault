@@ -103,8 +103,8 @@ typing_extensions==4.15.0
 tzdata==2025.3
 urllib3==1.26.18
 uvicorn==0.39.0
-uvloop==0.22.1
 watchfiles==1.1.1
 websocket-client==1.9.0
 websockets==15.0.1
 zipp==3.23.0
+huggingface_hub
